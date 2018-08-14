@@ -1,0 +1,20 @@
+#' @title Posterior distribution of the frequency bias parameter b of the Merzbach Assemblage
+#' @description Posterior distribution of the frequency bias parameter \emph{b} for the Merzbach assemblage  using equilibrium, variable population, and variable population and transmission models. The posterior distribution has beeobtained using Approximate Bayesian Computation, selecting the 1,000 parameters of \emph{b} with the closest fit to the observed data. Notice that posterior estimates of the other parameters are not included.
+
+#' @format A matrix containing the posterior samples of \emph{b} under the following scenarios:
+#' \describe{
+#' \item{\code{equilibrium}}{Results of the equilibrium model}
+#' \item{\code{variablepopulation}}{Results of the variable population model}
+#' \item{\code{phase7to8}}{Results of the variable population and transmission model for the transition between phase VII and VIII}
+#' \item{\code{phase8to9}}{Results of the variable population and transmission model for the transition between phase VIII and IX}
+#' \item{\code{phase9to10}}{Results of the variable population and transmission model for the transition between phase IX and X}
+#' \item{\code{phase10to11}}{Results of the variable population and transmission model for the transition between phase X and XI}
+#' \item{\code{phase11to12}}{Results of the variable population and transmission model for the transition between phase XI and XII}
+#' \item{\code{phase12to13}}{Results of the variable population and transmission model for the transition between phase XII and XIII}
+#' \item{\code{phase13to14}}{Results of the variable population and transmission model for the transition between phase XIII and XIV}
+#'}
+#' @references
+#'Crema, E.R., Kandler, A., Shennan, S., 2016. Revealing patterns of cultural transmission from frequency data: equilibrium and non-equilibrium assumptions. Scientific Reports 6, 39122. https://doi.org/10.1038/srep39122
+
+"post_b_merzbach"
+
