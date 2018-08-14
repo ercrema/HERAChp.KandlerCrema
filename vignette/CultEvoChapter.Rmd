@@ -26,9 +26,15 @@ library(plotrix)
 library(LaplacesDemon)
 library(ggplot2)
 library(ggridges)
-
 ```
 
+We then set the number of repetitions:
+
+```{r set_nsim}
+nsim = 100
+```
+
+All figures on the book chapter are all based on 1,000 simulation repetitions. To achieve exactlt the same output `nsim` should be set to 1000, although it is worth noting that this will require considerable running time. 
 
 # Figure 1: Diversity and Battleship Curves
 
@@ -39,17 +45,17 @@ The function `transmission()` executes unbiased and frequency biased transmissio
 #set random seed
 set.seed(123)
 #run simulation
-result.fig1=transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=0,raw=TRUE)
+res.fig1=transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=0,raw=TRUE)
 #extract matrix of frequencies
-mat.fig1=result.fig1$rawMatrix
+mat.fig1=res.fig1$rawMatrix
 #compute proportions
 pmat.fig1=prop.table(mat.fig1,1)
 #reorder matrix based on total frequencies
 pmat.fig1=pmat.fig1[,order(apply(pmat.fig1,2,sum),decreasing=TRUE)]
 #extract observed diversity time-series
-divTS = result.fig1$obs.div
+divTS = res.fig1$obs.div
 #extract expected diversity under neutrality
-divExp = result.fig1$exp.div
+divExp = res.fig1$exp.div
 ```
 
 The matrix `pmat.fig1` now contains the frequencies of each variant at each timestep, the vector `divTS` contains the time-series of Simpson's diversity index, while `divExp` contains the expected diversity under neutrality, equivalent to $1-\frac{1}{2N\mu+1}$. We are now ready to make our figure:
@@ -60,7 +66,6 @@ The matrix `pmat.fig1` now contains the frequencies of each variant at each time
 par(mfrow=c(1,2))
 
 #left panel 
-
 par(mar=c(5,0,5,0))
 topVariants = 10 #show only the 10 most frequent variants
 battleship.plot(pmat.fig1[,1:topVariants],yaxlab="",xaxlab= letters[1:topVariants],border=NA,col="grey",mar=c(5,5,5,1))
@@ -85,8 +90,6 @@ Here we explore how the turn-over rate based estimate ofthe exponent $x$ is affe
 set.seed(123)
 #set sampling window from 10 to 500, all with 1000 generations of warmup
 timesteps <- c(seq(1010,1100,10),1200,1500)
-#set number of repetitions
-nsim = 1000
 
 #create list for storing the results:
 res.fig2 = matrix(NA,nrow=nsim,ncol=length(timesteps))
@@ -100,8 +103,8 @@ for (i in 1:length(timesteps))
 
 #Extract summary statistics (median, first and third quartile) from each setting of the sampling window
 mid.fig2=apply(res.fig2,2,median)
-lo.fig2=sapply(res.fig2,2,quantile,0.25)
-up.fig2=sapply(res.fig2,2,quantile,0.75)
+lo.fig2=apply(res.fig2,2,quantile,0.25)
+up.fig2=apply(res.fig2,2,quantile,0.75)
 ```
 
 We can now visualise our output. The object `res.fig2` contains the estimates of $x$ under different sampling window size, so a quick way to plot the simulation output is to just make a box and whisker plot:
@@ -148,8 +151,6 @@ To execute a simulation with an heterogenous population of learners we use the f
 ```{r}
 #set random seed
 set.seed(123)
-#set number of repetitions
-nsim=1000
 #set number of generations
 ngen=1000
 #set parameter to vary (bsd)
@@ -163,8 +164,6 @@ for (i in 1:length(bsd))
 {
   res.fig3[,i]=replicate(heteroPopTransmission(N=500,bmean=0,bsd=bsd[i],mu=0.01,timesteps=ngen)[ngen],n=nsim)
 }
-
-
 ```
 
 Each column of the matrix `res.fig3` now contains the result of 1,000 simulation runs with different levels of hetogeneity in the population of learners as defined by the parameter `bsd`.
@@ -203,7 +202,7 @@ par(mar=c(5,5,1,1.2))
 hist(res.fig3[,1],breaks=seq(0.55,1,0.02),border=NA,col="bisque2",xlab="Diversity",main="",cex.lab=1.5,cex.axis=1.3)
 abline(v=1-(1/(500* 0.01*2+1)),lty=2,col=2,lwd=1.5)
 abline(v=mean(res.fig[,1]),lty=3,lwd=1.5)
-legend("bottomleft",legend=c("Average Diversity (observed)","Expected Diversity"),col=c(1,2),lty=c(3,2),bty="n",cex=0.8,y.intersp=1.5)
+legend("left",legend=c("Average Diversity (observed)","Expected Diversity"),col=c(1,2),lty=c(3,2),bty="n",cex=0.8,y.intersp=1.5)
 
 hist(res.fig3[,2],breaks=seq(0.55,1,0.02),border=NA,col="bisque2",xlab="Diversity",main="",cex.lab=1.5,cex.axis=1.3)
 abline(v=1-(1/(500* 0.01*2+1)),lty=2,col=2,lwd=1.5)
@@ -222,17 +221,15 @@ The argument `bias` in the function `transmission()` allows for a time-varying f
 ```{r}
 #set random seed
 set.seed(123)
-#set number of repetitions
-nsim=1000
 #define bias parameter
 bias.eq = 0
 bias.neq = c(rep(0,1500),rep(0.5,10),rep(0,490)) 
 
 
 #run simulations
-fig4.eq.res=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.eq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
+res.fig4.eq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.eq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
 
-fig4.neq.res=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.neq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
+res.fig4.neq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.neq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
 
 # Compute Expected Diversity
 expected.diversity = 1 - (1/(2*500*0.005+1))
@@ -242,20 +239,20 @@ expected.diversity = 1 - (1/(2*500*0.005+1))
 ```{r}
 par(mfrow=c(2,1),mar=c(1,5,5,2))
 
-plot(1:500,fig4.eq.res[,1],ylim=c(0.4,1),type="n",xlab="",ylab="Simpson's Diversity",xaxs="i",axes=F,las=2)
+plot(1:500,res.fig4.eq[,1],ylim=c(0.4,1),type="n",xlab="",ylab="Simpson's Diversity",xaxs="i",axes=F,las=2)
 text(480,0.5,"a",cex=1.5)
-polygon(x=c(1:500,500:1),y=c(apply(fig4.eq.res,1,quantile,prob=0.025),rev(apply(fig4.eq.res,1,quantile,prob=0.975))),col=rgb(1,0,0,0.2),border=NA)
-apply(fig4.eq.res,2,lines,col=rgb(0,0,0,0.01),x=1:500)
-lines(1:500,apply(fig4.eq.res,1,mean),col="red")
+polygon(x=c(1:500,500:1),y=c(apply(res.fig4.eq,1,quantile,prob=0.025),rev(apply(res.fig4.eq,1,quantile,prob=0.975))),col=rgb(1,0,0,0.2),border=NA)
+apply(res.fig4.eq,2,lines,col=rgb(0,0,0,0.01),x=1:500)
+lines(1:500,apply(res.fig4.eq,1,mean),col="red")
 abline(h=expected.diversity,col="black",lty=2)
 axis(2,at=seq(0,1,0.2),las=2,hadj=0.8)
 
 par(mar=c(6,5,0,2))
 
-plot(1:500,fig4.neq.res[,1],ylim=c(0.4,1),type="n",xlab="time",ylab="Simpson's Diversity",xaxs="i",axes=F,las=2)
-polygon(x=c(1:500,500:1),y=c(apply(fig4.neq.res,1,quantile,prob=0.025),rev(apply(fig4.neq.res,1,quantile,prob=0.975))),col=rgb(1,0,0,0.2),border=NA)
-apply(fig4.neq.res,2,lines,col=rgb(0,0,0,0.01),x=1:500)
-lines(1:500,apply(fig4.neq.res,1,mean),col="red")
+plot(1:500,res.fig4.neq[,1],ylim=c(0.4,1),type="n",xlab="time",ylab="Simpson's Diversity",xaxs="i",axes=F,las=2)
+polygon(x=c(1:500,500:1),y=c(apply(res.fig4.neq,1,quantile,prob=0.025),rev(apply(res.fig4.neq,1,quantile,prob=0.975))),col=rgb(1,0,0,0.2),border=NA)
+apply(res.fig4.neq,2,lines,col=rgb(0,0,0,0.01),x=1:500)
+lines(1:500,apply(res.fig4.neq,1,mean),col="red")
 abline(h=expected.diversity,col="black",lty=2)
 rect(xleft=100,xright=110,ybottom=-100,ytop=100,col=rgb(0,0,1,0.2),lty=3)
 text(480,0.5,"b",cex=1.5)
