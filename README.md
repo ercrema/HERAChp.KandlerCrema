@@ -1,1 +1,1 @@
-CultEvoChapter
+Code and Scripts for reproducing the analysis in the book chapter 'Analysing cultural frequency data: neutral theory' by Anne Kandler and Enrico Crema for the 'Handbook of Evolutionary Research in Archaeology'.
