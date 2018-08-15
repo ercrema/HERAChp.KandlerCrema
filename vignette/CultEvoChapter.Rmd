@@ -15,17 +15,19 @@ knitr::opts_chunk$set(echo = TRUE)
 This markdown document contains the R script for reproducing some of the figures of the book chapter "Analysing cultural frequency data: neutral theory and beyond" by A.Kandler and E.Crema. The main functions for running the simulations described in the chapter can be installed as an R package with following command:
 
 ```{r,installpackage,eval=FALSE}
-devtools::install_github("ercrema/CultEvoChapter")
+devtools::install_github("ercrema/HERAChp.KandlerCrema")
 ```
 
 In order to fully reproduce the figures in the text the following R packages must also be loaded:
 
 ```{r,load_packages}
-library(CultEvo)
+library(HERAChp.KandlerCrema)
 library(plotrix)
 library(LaplacesDemon)
 library(ggplot2)
 library(ggridges)
+library(foreach)
+library(doParallel)
 ```
 
 We then set the number of repetitions:
@@ -34,7 +36,7 @@ We then set the number of repetitions:
 nsim = 100
 ```
 
-All figures on the book chapter are all based on 1,000 simulation repetitions. To achieve exactlt the same output `nsim` should be set to 1000, although it is worth noting that this will require considerable running time. 
+All figures on the book chapter are based on 1,000 simulation runs. To obtain the same output/figures as those presented in the paper set `nsim`to 1000. Notice that with `nsim=100` the rendering of the markdown document took about 3 hours on a 3.3 GHz Intel Core i7, 16 GB Ram machine.  
 
 # Figure 1: Diversity and Battleship Curves
 
@@ -85,21 +87,30 @@ mtext(side=3,"Diversity ",line=1)
 
 Here we explore how the turn-over rate based estimate ofthe exponent $x$ is affected by the size (duration) of the sampling window. We compare the expected value f $x$ under neutrality (0.86) against distributions of simulation outputs with different number of timesteps (i.e. differently sized of sampling window). We first execute the simulation (notice that with `nsim=1000` the process will take XXX hours) 
 
+```{r, open_clusters_fig2, include=FALSE}
+#set up parallel computing
+cl <-  makeCluster(detectCores()-1)  #use one core less than the total available
+registerDoParallel(cl)
+```
+
+
 ```{r}
-#set random seed
-set.seed(123)
 #set sampling window from 10 to 500, all with 1000 generations of warmup
 timesteps <- c(seq(1010,1100,10),1200,1500)
 
 #create list for storing the results:
 res.fig2 = matrix(NA,nrow=nsim,ncol=length(timesteps))
 
-#execute transmission() and extract estimates of the exponent x (here named b):
+# set parameter space
+timesteps.param = rep(timesteps,each=nsim)
 
-for (i in 1:length(timesteps))
-{
-  res.fig2[,i]=replicate(transmission(timesteps=timesteps[i],mu=0.01,N=500,warmUp=1000,bias=0,raw=F,top=10)$b,n=nsim)
+# execute simulation in parallel and extract estimates of the exponent x (here named b):
+res.fig2.vector = foreach(i=1:length(timesteps.param),.combine=c,.export="transmission") %dopar% {
+  tmp=transmission(timesteps=timesteps.param[i],mu=0.01,N=500,warmUp=1000,bias=0,raw=F,top=10)$b
 }
+
+# convert output into a matrix
+res.fig2 = matrix(res.fig2.vector,nrow=nsim,ncol=length(timesteps))
 
 #Extract summary statistics (median, first and third quartile) from each setting of the sampling window
 mid.fig2=apply(res.fig2,2,median)
@@ -113,6 +124,12 @@ We can now visualise our output. The object `res.fig2` contains the estimates of
 boxplot(res.fig2,names=timesteps-1000,xlab="time-steps",ylab="Estimates of x",col="bisque3")
 abline(h=0.86,col=2,lty=2) #expected value of x
 ```
+
+```{r, close_clusters_fig2, include=FALSE}
+#stop cluster
+stopCluster(cl)
+```
+
 
 The code below is instead the one used in the manuscript:
 
