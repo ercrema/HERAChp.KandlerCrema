@@ -30,20 +30,21 @@ library(foreach)
 library(doParallel)
 ```
 
-We then set the number of repetitions:
+Some of the figures require a considerable number of simulation runs. In order to reduce running time the example belows are based on 100 repetitions instead of the 1,000 used in the book chapter, and most simulations are executed using multiple threads. 
 
 ```{r set_nsim}
-nsim = 100
+nsim = 100 #number of repetitions
+ncores = detectCores()-1 #use total number of available threads minus 1
 ```
 
-All figures on the book chapter are based on 1,000 simulation runs. To obtain the same output/figures as those presented in the paper set `nsim`to 1000. Notice that with `nsim=100` the rendering of the markdown document took about 3 hours on a 3.3 GHz Intel Core i7, 16 GB Ram machine.  
+Notice that even with the default settings above executing all the scripts below took about 40 minutes using a machine with with 8 logical CPUs (3.3 GHz Intel Core i7) and 16 GB Ram machine.  
 
 # Figure 1: Diversity and Battleship Curves
 
 The function `transmission()` executes unbiased and frequency biased transmission returning a variety of statistics. The example below compares the time-series of the Simpson's diversity index against the the so-called battle-ship curve of the most common variants. First we run the model and extract relevant outputs:
 
 
-```{r,fig.height=5,fig.width=8}
+```{r,fig1.sim,fig.height=5,fig.width=8}
 #set random seed
 set.seed(123)
 #run simulation
@@ -63,7 +64,7 @@ divExp = res.fig1$exp.div
 The matrix `pmat.fig1` now contains the frequencies of each variant at each timestep, the vector `divTS` contains the time-series of Simpson's diversity index, while `divExp` contains the expected diversity under neutrality, equivalent to $1-\frac{1}{2N\mu+1}$. We are now ready to make our figure:
 
 
-```{r,fig.height=5,fig.width=8}
+```{r,fig1.plot,fig.height=5,fig.width=8}
 #make figure
 par(mfrow=c(1,2))
 
@@ -87,27 +88,26 @@ mtext(side=3,"Diversity ",line=1)
 
 Here we explore how the turn-over rate based estimate ofthe exponent $x$ is affected by the size (duration) of the sampling window. We compare the expected value f $x$ under neutrality (0.86) against distributions of simulation outputs with different number of timesteps (i.e. differently sized of sampling window). We first execute the simulation (notice that with `nsim=1000` the process will take XXX hours) 
 
-```{r, open_clusters_fig2, include=FALSE}
-#set up parallel computing
-cl <-  makeCluster(detectCores()-1)  #use one core less than the total available
-registerDoParallel(cl)
-```
 
+```{r,fig2.simulation}
 
-```{r}
 #set sampling window from 10 to 500, all with 1000 generations of warmup
 timesteps <- c(seq(1010,1100,10),1200,1500)
 
-#create list for storing the results:
-res.fig2 = matrix(NA,nrow=nsim,ncol=length(timesteps))
-
 # set parameter space
 timesteps.param = rep(timesteps,each=nsim)
+
+#set up parallel computing
+cl <-  makeCluster(ncores)  
+registerDoParallel(cl)
 
 # execute simulation in parallel and extract estimates of the exponent x (here named b):
 res.fig2.vector = foreach(i=1:length(timesteps.param),.combine=c,.export="transmission") %dopar% {
   tmp=transmission(timesteps=timesteps.param[i],mu=0.01,N=500,warmUp=1000,bias=0,raw=F,top=10)$b
 }
+
+#stop cluster
+stopCluster(cl)
 
 # convert output into a matrix
 res.fig2 = matrix(res.fig2.vector,nrow=nsim,ncol=length(timesteps))
@@ -118,14 +118,9 @@ lo.fig2=apply(res.fig2,2,quantile,0.25)
 up.fig2=apply(res.fig2,2,quantile,0.75)
 ```
 
-```{r, close_clusters_fig2, include=FALSE}
-#stop cluster
-stopCluster(cl)
-```
-
 We can now visualise our output. The object `res.fig2` contains the estimates of $x$ under different sampling window size, so a quick way to plot the simulation output is to just make a box and whisker plot:
 
-```{r,fig.width=9,fig.height=6}
+```{r,fig2.plot1,fig.width=9,fig.height=6}
 boxplot(res.fig2,names=timesteps-1000,xlab="time-steps",ylab="Estimates of x",col="bisque3")
 abline(h=0.86,col=2,lty=2) #expected value of x
 ```
@@ -133,7 +128,7 @@ abline(h=0.86,col=2,lty=2) #expected value of x
 
 The code below is instead the one used in the manuscript:
 
-```{r,fig.width=9,fig.height=6}
+```{r,fig2.plot2,fig.width=9,fig.height=6}
 #Plot results using rect() and unqeual spacing along the x-axis
 par(mar=c(5,4,4,1))
 plot(1:14,1:14,ylim=c(min(lo.fig2),max(up.fig2)),type="n",axes=F,xlab="N. of Timesteps",ylab="estimates of x")
@@ -166,16 +161,7 @@ abline(h=0.86,lty=2,col="red")
 To execute a simulation with an heterogenous population of learners we use the function `heteroPopTransmission()` which enables to define the frequency bias of each individual at each generation as a random draw from a normal distribution with a user defined mean (argument `bmean`) and standard deviation (argument `bsd`). Here we explore a scenario where the mean is hold constant to 0 (hence on average the learners engage into an unbiased transmission), but the standard deviation is varied and explored. 
 
 
-```{r, open_clusters_fig3, include=FALSE}
-#set up parallel computing
-cl <-  makeCluster(detectCores()-1)  #use one core less than the total available
-registerDoParallel(cl)
-```
-
-
-```{r}
-#set random seed
-set.seed(123)
+```{r,fig3.simulation}
 #set number of generations
 ngen=1000
 #set parameter to vary (bsd)
@@ -183,33 +169,25 @@ bsd = c(0,0.1,0.2)
 #set parameter space
 bsd.param = rep(bsd,each=nsim)
 
-#define matrix for storing the results
-res.fig3 = matrix(NA,nrow=nsim,ncol=length(bsd))
-
-
-#run simulation with three different values of bsd
-for (i in 1:length(bsd))
-{
-  res.fig3[,i]=replicate(heteroPopTransmission(N=500,bmean=0,bsd=bsd[i],mu=0.01,timesteps=ngen)[ngen],n=nsim)
-}
-
+#set up parallel computing
+cl <-  makeCluster(ncores)  
+registerDoParallel(cl)
 
 res.fig3.vector = foreach(i=1:length(bsd.param),.combine=c,.export="heteroPopTransmission") %dopar% {
   heteroPopTransmission(N=500,bmean=0,bsd=bsd.param[i],mu=0.01,timesteps=ngen)[ngen]
 }
 
+#stop cluster
+stopCluster(cl)
+
 # convert output into a matrix
 res.fig3 = matrix(res.fig3.vector,nrow=nsim,ncol=length(bsd))
 ```
 
-```{r, close_clusters_fig3, include=FALSE}
-#stop cluster
-stopCluster(cl)
-```
 
 Each column of the matrix `res.fig3` now contains the result of 1,000 simulation runs with different levels of hetogeneity in the population of learners as defined by the parameter `bsd`.
 
-```{r,fig.height=4,fig.width=12}
+```{r,fig3.plot,fig.height=4,fig.width=12}
 # Setup layout
 mat=matrix(c(1,4,4,4,2,5,5,5,3,6,6,6),nrow=2,ncol=6)
 layout(mat=mat,heights=c(0.45,0.55),widths=c(0.45,0.55,0.45,0.55,0.45,0.55))
@@ -260,15 +238,11 @@ abline(v=mean(res.fig3[,3]),lty=3,lwd=1.5)
 The argument `bias` in the function `transmission()` allows for a time-varying frequency bias. The code below explores how a temporary shift from an unbiased transmission to an anti-conformist transmission affects the observed diversity of the cultural variants. 
 
 ```{r, open_clusters_fig4, include=FALSE}
-#set up parallel computing
-cl <-  makeCluster(detectCores()-1)  #use one core less than the total available
-registerDoParallel(cl)
+
 ```
 
 
 ```{r}
-#set random seed
-set.seed(123)
 #define bias parameter
 bias.eq = 0
 bias.neq = c(rep(0,1500),rep(0.5,10),rep(0,490)) 
@@ -277,35 +251,30 @@ bias.neq = c(rep(0,1500),rep(0.5,10),rep(0,490))
 #run simulations
 #res.fig4.eq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.eq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
 
+#set up parallel computing
+cl <-  makeCluster(detectCores()-1)  #use one core less than the total available
+registerDoParallel(cl)
+
 res.fig4.eq.vector = foreach(i=1:nsim,.combine=c,.export="transmission") %dopar% {
   transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.eq,raw=TRUE)$obs.div[401:900]
 }
-res.fig4.eq = matrix(res.fig4.eq.vector,nrow=500,ncol=nsim)
-
-
-
-
-#res.fig4.neq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.neq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
 
 res.fig4.neq.vector = foreach(i=1:nsim,.combine=c,.export="transmission") %dopar% {
   transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.neq,raw=TRUE)$obs.div[401:900]
 }
-res.fig4.neq = matrix(res.fig4.eq.vector,nrow=500,ncol=nsim)
 
+#stop cluster
+stopCluster(cl)
 
+res.fig4.eq = matrix(res.fig4.eq.vector,nrow=500,ncol=nsim)
+res.fig4.neq = matrix(res.fig4.neq.vector,nrow=500,ncol=nsim)
 
 # Compute Expected Diversity
 expected.diversity = 1 - (1/(2*500*0.005+1))
 ```
 
 
-```{r, close_clusters_fig4, include=FALSE}
-#stop cluster
-stopCluster(cl)
-```
-
-
-```{r}
+```{r,fig4.plot1,fig.width=8,fig.height=6}
 par(mfrow=c(2,1),mar=c(1,5,5,2))
 
 plot(1:500,res.fig4.eq[,1],ylim=c(0.4,1),type="n",xlab="",ylab="Simpson's Diversity",xaxs="i",axes=F,las=2)
@@ -334,12 +303,12 @@ axis(1,at=c(1,100,200,300,400,500))
 
 The code below plots the results of the 
 
-```{r}
+```{r,fig7.load}
 # load data
 data("post_b_merzbach")
 ```
 
-```{r}
+```{r,fig7.plot1,fig.width=6,fig.height=8}
 # Simple boxplot:
 par(mar=c(5,8,1,1))
 boxplot(post_b_merzbach,horizontal=T,las=2,xlab="b")
@@ -347,7 +316,7 @@ abline(v=0,lty=2,col=2) #unbiased transmission
 ```
 
 
-```{r,fig.width=6,fig.height=8}
+```{r,fig7.plot2,fig.width=6,fig.height=8}
 #Extract 50 and 95$ HPDI
 hpd50 = t(apply(post_b_merzbach,2,p.interval,prob=0.5))
 hpd95 = t(apply(post_b_merzbach,2,p.interval,prob=0.95))

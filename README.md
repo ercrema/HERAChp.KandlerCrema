@@ -1,14 +1,51 @@
 # Introduction
-Code and Scripts for reproducing the analysis in the book chapter 'Analysing cultural frequency data: neutral theory' by Anne Kandler and Enrico Crema for the 'Handbook of Evolutionary Research in Archaeology'.
+This package contains a set of R functions that enables the reproduction of the analysis and associated figures for the book chapter *Analysing cultural frequency data: neutral theory* by Anne Kandler and Enrico Crema for the volume *Handbook of Evolutionary Research in Archaeology*, edited by Anna Prentiss. The package contains two main functions for simulating cultural transmission:
 
-* aims of the package
-* what else can be done
+* `transmission()` simulates unbiased and frequency biased cultural transmission and computes turn-over rates and diversity statistic.
+* `heteroPopTransmission()` simulates unbiased and frequency biased cultural transmission with an heterogeneous population of social learners.
 
-# Setup and Installation
+More details can be found in the help documentation of each function (which can be accessed by typing `?transmission` and `?heteroPopTransmission`) and on the paper. 
 
-* explain installation, in particular option for building the vignette
-* mention parallel processing and time for execution
-* mention number of simulation in paper and number of cores in the vignette settings.
-* route 1: automatic via installation 
-* route 2: manual post installation
-* route 3: download the html file
+# Installation and Vignette
+
+*HERAChp.KandlerCrema* can be installed directly from the github repository using the following command:
+
+`devtools::install_github("ercrema/HERAChp.KandlerCrema")`
+
+Notice that this requires the `devtools` package installed. 
+
+The package contains a vignette which details the workflow required to generate the figures on the book chapter. Some of the figures require a considerable number of simulation runs. In order to reduce running the document is based on 100 simulation runs (rather than the 1,000 used in the book chapter) and some scripts are executed across multiple threads. Nonetheless, rendering the Rmarkdown file and producing the vignette took ca. 40 minutes on an IMac with 8 logical CPUs (3.3 GHz Intel Core i7) and 16 GB Ram. 
+
+
+
+
+
+There are three ways to obtain the vignette:
+
+1. Create (render) the vignette during the installation. To do so use the following command during the installation:
+
+`devtools::install_github("ercrema/HERAChp.KandlerCrema", build_vignettes=TRUE)`
+
+and access the vignette with the following command after loading the library:
+
+`vignette("ChapterFigures")`
+
+Notice that this option might take a considerable amount of time (see above) and there are no possibility to change the simulation parameters. 
+
+
+2. Manually download and render the Rmarkdown file.
+
+Download the rmarkdown file by click [here](https://github.com/ercrema/HERAChp.KandlerCrema/blob/master/vignette/ChapterFigures.Rmd?raw=true), move this to the current working directory, and type the following command:
+
+`rmarkdown::render("ChapterFigures.Rmd", clean=TRUE, output_format="html_document")`
+
+This option allow users to change the settings of the R markdown file.
+
+3. Download the rendered vignette file by clicking [here](https://github.com/ercrema/HERAChp.KandlerCrema/blob/master/vignette/ChapterFigures.html?raw=true).
+
+This option does not require package installation of the package.
+
+
+
+
+
