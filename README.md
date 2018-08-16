@@ -35,7 +35,7 @@ Notice that this option might take a considerable amount of time (see above) and
 
 2. Manually download and render the Rmarkdown file.
 
-Download the rmarkdown file by click [here](https://github.com/ercrema/HERAChp.KandlerCrema/blob/master/vignette/ChapterFigures.Rmd?raw=true), move this to the current working directory, and type the following command:
+Download the rmarkdown file by click [here](https://raw.githubusercontent.com/ercrema/KandlerCrema/master/ChapterFigures.Rmd), move this to the current working directory, and type the following command:
 
 `rmarkdown::render("ChapterFigures.Rmd", clean=TRUE, output_format="html_document")`
 
