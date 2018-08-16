@@ -25,7 +25,7 @@ A vector containing the Simpson's diversity index at each timestep/generation.
 Simulates biased and frequency-biased transmission with the frequency bias parameter of each individual randomly drawn from a normal distribution with user defined mean and standard deviation.
 }
 \details{
-The function simulates cultural transmission within a population of heterogenous learners, each with a different levels of frequency bias at each generation. More formally the probability of an individual $x$ copying a variant $i$ is given by the following equation
-\deqn{\frac{\pi_i=\left(\frac{m_i}{N}\right)^{1-\beta_x}}{\sum\limits_{j=1}^k \left(\frac{m_j}{N}\right)^{1-\beta_x}}(1-\mu)}
+The function simulates cultural transmission within a population of heterogenous learners, each with a different levels of frequency bias at each generation. More formally the probability of an individual $x$ copying a variant $i$ is given by the following equation.
+\deqn{\pi_i=\frac{\left(\frac{m_i}{N}\right)^{1-\beta_x}}{\sum\limits_{j=1}^k \left(\frac{m_j}{N}\right)^{1-\beta_x}}(1-\mu)}
 where \eqn{\beta_x} is randomly drawn from a normal distribution with mean \code{bmean} and standard deviation \code{bsd}.
 }

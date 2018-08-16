@@ -9,7 +9,7 @@
 #' @param raw Logical variable indicating whether the matrix of variants frequencies are returned or not. Default is FALSE.
 #' @details The function simulates unbiased (\code{bias}=0), confomist (\code{bias}<0), and anti-conformist (\code{bias}>0) cultural transmission with a user defined population size and mutation rates, returning Simpson's diversity index of variants frequency, observed and expected turnover rates, and estimates of the exponent $b$ following the procedure described in Acerbi and Bentley 2014. Frequency bias is modelled using the following formula:
 
-#' \deqn{\frac{\pi_i=\left(\frac{m_i}{N}\right)^{1-\beta}}{\sum\limits_{j=1}^k \left(\frac{m_j}{N}\right)^{1-\beta}}(1-\mu)}
+#' \deqn{\pi_i=\frac{\left(\frac{m_i}{N}\right)^{1-\beta}}{\sum\limits_{j=1}^k \left(\frac{m_j}{N}\right)^{1-\beta}}(1-\mu)}
 
 #' with \eqn{pi_i} equal to the probability of copying the variant \eqn{i}, \eqn{m_i} to the number of individuals possessing the variant \eqn{i}, \eqn{N} to the population size, \eqn{mu} to the mutation rate, and \eqn{\beta} to the frequency bias parameter (i.e. \code{bias}). 
 
@@ -142,12 +142,11 @@ return(((hi-lo)/(max(x)-min(x)))*(x-max(x))+hi)
 #' @param mu Innovation rate.
 #' @param bmean Mean of the frequency bias parameter b.
 #' @param bsd Standard deviation of the frequency bias parameter b.
-#' @details The function simulates cultural transmission within a population of heterogenous learners, each with a different levels of frequency bias at each generation. More formally the probability of an individual $x$ copying a variant $i$ is given by the following equation
+#' @details The function simulates cultural transmission within a population of heterogenous learners, each with a different levels of frequency bias at each generation. More formally the probability of an individual $x$ copying a variant $i$ is given by the following equation.
 
-#' \deqn{\frac{\pi_i=\left(\frac{m_i}{N}\right)^{1-\beta_x}}{\sum\limits_{j=1}^k \left(\frac{m_j}{N}\right)^{1-\beta_x}}(1-\mu)}
+#' \deqn{\pi_i=\frac{\left(\frac{m_i}{N}\right)^{1-\beta_x}}{\sum\limits_{j=1}^k \left(\frac{m_j}{N}\right)^{1-\beta_x}}(1-\mu)}
 
 #' where \eqn{\beta_x} is randomly drawn from a normal distribution with mean \code{bmean} and standard deviation \code{bsd}. 
-
 #' @return A vector containing the Simpson's diversity index at each timestep/generation.
 #' 
 #' @import stats
