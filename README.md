@@ -31,13 +31,13 @@ Notice that this option might take a considerable amount of time (see above) and
 
 2. Manually download and render the markdown file.
 
-Download the markdown file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd),and saving the page ensuring that the file extension is kept to `.Rmd`. Move the file to your current working directory, and type the following command in R:
+Download the markdown file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignettes/ChapterFigures.Rmd),and saving the page ensuring that the file extension is kept to `.Rmd`. Move the file to your current working directory, and type the following command in R:
 
 `rmarkdown::render("ChapterFigures.Rmd")`
 
 This option allows you to change the settings of the R markdown file (e.g. changing the number of simulation runs).
 
-3. Download the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.html) and saving the opened page as an html file on your local machine. The file can then be opened by any browser. This option does not require package installation.
+3. Download the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignettes/ChapterFigures.html) and saving the opened page as an html file on your local machine. The file can then be opened by any browser. This option does not require package installation.
 
 
 
