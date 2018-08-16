@@ -16,10 +16,6 @@ Notice that this requires the `devtools` package installed.
 
 The package contains a vignette which details the workflow required to generate the figures on the book chapter. Some of the figures require a considerable number of simulation runs. In order to reduce running the document is based on 100 simulation runs (rather than the 1,000 used in the book chapter) and some scripts are executed across multiple threads. Nonetheless, rendering the Rmarkdown file and producing the vignette took ca. 40 minutes on an IMac with 8 logical CPUs (3.3 GHz Intel Core i7) and 16 GB Ram. 
 
-
-
-
-
 There are three ways to obtain the vignette:
 
 1. Create (render) the vignette during the installation. To do so use the following command during the installation:
@@ -35,16 +31,13 @@ Notice that this option might take a considerable amount of time (see above) and
 
 2. Manually download and render the Rmarkdown file.
 
-Download the rmarkdown file by click [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd), move this to the current working directory, and type the following command:
-
-<a href="https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd" download>Click to Download</a>
-
+Download the rmarkdown file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd), move this to the current working directory, and type the following command:
 
 `rmarkdown::render("ChapterFigures.Rmd", clean=TRUE, output_format="html_document")`
 
 This option allow users to change the settings of the R markdown file.
 
-3. Download the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.html).
+3. View the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.html).
 
 This option does not require package installation of the package.
 
