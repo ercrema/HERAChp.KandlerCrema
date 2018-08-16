@@ -2,8 +2,17 @@
 title: "Analysing cultural frequency data: neutral theory
 and beyond"
 author: "Enrico Crema"
-date: "13 August 2018"
-output: html_document
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    fig_caption: true
+    self_contained: yes
+fontsize: 11pt
+documentclass: article
+vignette: >
+  %\VignetteIndexEntry{Analysing cultural frequency data: neutral theory and beyond}
+  %\VignetteEngine{knitr::rmarkdown_notangle}
 ---
 
 ```{r setup, include=FALSE}
@@ -33,7 +42,7 @@ library(doParallel)
 Some of the figures require a considerable number of simulation runs. In order to reduce running time the example belows are based on 100 repetitions instead of the 1,000 used in the book chapter, and most simulations are executed using multiple threads. 
 
 ```{r set_nsim}
-nsim = 100 #number of repetitions
+nsim = 5 #number of repetitions
 ncores = detectCores()-1 #use total number of available threads minus 1
 ```
 
