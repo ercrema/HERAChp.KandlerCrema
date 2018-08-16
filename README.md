@@ -33,13 +33,11 @@ Notice that this option might take a considerable amount of time (see above) and
 
 Download the rmarkdown file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd), move this to the current working directory, and type the following command:
 
-`rmarkdown::render("ChapterFigures.Rmd", clean=TRUE, output_format="html_document")`
+`rmarkdown::render("ChapterFigures.Rmd")`
 
 This option allow users to change the settings of the R markdown file.
 
-3. View the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.html).
-
-This option does not require package installation of the package.
+3. Download the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.html) and saving the opened page as an html file on your local machine. The file can be opened by any browser. This option does not require package installation of the package.
 
 
 
