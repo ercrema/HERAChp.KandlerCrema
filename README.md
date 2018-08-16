@@ -31,13 +31,13 @@ Notice that this option might take a considerable amount of time (see above) and
 
 2. Manually download and render the Rmarkdown file.
 
-Download the rmarkdown file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd), move this to the current working directory, and type the following command:
+Download the rmarkdown file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd),and saving the page with the extension `.Rmd`. Move the file to your current working directory, and type the following command to render the file:
 
 `rmarkdown::render("ChapterFigures.Rmd")`
 
-This option allow users to change the settings of the R markdown file.
+This option allows you to change the settings of the R markdown file.
 
-3. Download the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.html) and saving the opened page as an html file on your local machine. The file can be opened by any browser. This option does not require package installation of the package.
+3. Download the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.html) and saving the opened page as an html file on your local machine. The file can be opened by any browser. This option does not require package installation.
 
 
 
