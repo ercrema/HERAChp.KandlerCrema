@@ -37,6 +37,9 @@ Notice that this option might take a considerable amount of time (see above) and
 
 Download the rmarkdown file by click [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd), move this to the current working directory, and type the following command:
 
+<a href="https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignette/ChapterFigures.Rmd" download>Click to Download</a>
+
+
 `rmarkdown::render("ChapterFigures.Rmd", clean=TRUE, output_format="html_document")`
 
 This option allow users to change the settings of the R markdown file.
