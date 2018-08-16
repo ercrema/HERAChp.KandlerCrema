@@ -42,7 +42,7 @@ library(doParallel)
 Some of the figures require a considerable number of simulation runs. In order to reduce running time the example belows are based on 100 repetitions instead of the 1,000 used in the book chapter, and most simulations are executed using multiple threads. 
 
 ```{r set_nsim}
-nsim = 5 #number of repetitions
+nsim = 100 #number of repetitions
 ncores = detectCores()-1 #use total number of available threads minus 1
 ```
 
