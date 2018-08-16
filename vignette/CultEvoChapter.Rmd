@@ -118,16 +118,16 @@ lo.fig2=apply(res.fig2,2,quantile,0.25)
 up.fig2=apply(res.fig2,2,quantile,0.75)
 ```
 
+```{r, close_clusters_fig2, include=FALSE}
+#stop cluster
+stopCluster(cl)
+```
+
 We can now visualise our output. The object `res.fig2` contains the estimates of $x$ under different sampling window size, so a quick way to plot the simulation output is to just make a box and whisker plot:
 
 ```{r,fig.width=9,fig.height=6}
 boxplot(res.fig2,names=timesteps-1000,xlab="time-steps",ylab="Estimates of x",col="bisque3")
 abline(h=0.86,col=2,lty=2) #expected value of x
-```
-
-```{r, close_clusters_fig2, include=FALSE}
-#stop cluster
-stopCluster(cl)
 ```
 
 
@@ -165,6 +165,14 @@ abline(h=0.86,lty=2,col="red")
 
 To execute a simulation with an heterogenous population of learners we use the function `heteroPopTransmission()` which enables to define the frequency bias of each individual at each generation as a random draw from a normal distribution with a user defined mean (argument `bmean`) and standard deviation (argument `bsd`). Here we explore a scenario where the mean is hold constant to 0 (hence on average the learners engage into an unbiased transmission), but the standard deviation is varied and explored. 
 
+
+```{r, open_clusters_fig3, include=FALSE}
+#set up parallel computing
+cl <-  makeCluster(detectCores()-1)  #use one core less than the total available
+registerDoParallel(cl)
+```
+
+
 ```{r}
 #set random seed
 set.seed(123)
@@ -172,6 +180,9 @@ set.seed(123)
 ngen=1000
 #set parameter to vary (bsd)
 bsd = c(0,0.1,0.2)
+#set parameter space
+bsd.param = rep(bsd,each=nsim)
+
 #define matrix for storing the results
 res.fig3 = matrix(NA,nrow=nsim,ncol=length(bsd))
 
@@ -181,6 +192,19 @@ for (i in 1:length(bsd))
 {
   res.fig3[,i]=replicate(heteroPopTransmission(N=500,bmean=0,bsd=bsd[i],mu=0.01,timesteps=ngen)[ngen],n=nsim)
 }
+
+
+res.fig3.vector = foreach(i=1:length(bsd.param),.combine=c,.export="heteroPopTransmission") %dopar% {
+  heteroPopTransmission(N=500,bmean=0,bsd=bsd.param[i],mu=0.01,timesteps=ngen)[ngen]
+}
+
+# convert output into a matrix
+res.fig3 = matrix(res.fig3.vector,nrow=nsim,ncol=length(bsd))
+```
+
+```{r, close_clusters_fig3, include=FALSE}
+#stop cluster
+stopCluster(cl)
 ```
 
 Each column of the matrix `res.fig3` now contains the result of 1,000 simulation runs with different levels of hetogeneity in the population of learners as defined by the parameter `bsd`.
@@ -235,6 +259,13 @@ abline(v=mean(res.fig3[,3]),lty=3,lwd=1.5)
 
 The argument `bias` in the function `transmission()` allows for a time-varying frequency bias. The code below explores how a temporary shift from an unbiased transmission to an anti-conformist transmission affects the observed diversity of the cultural variants. 
 
+```{r, open_clusters_fig4, include=FALSE}
+#set up parallel computing
+cl <-  makeCluster(detectCores()-1)  #use one core less than the total available
+registerDoParallel(cl)
+```
+
+
 ```{r}
 #set random seed
 set.seed(123)
@@ -244,12 +275,33 @@ bias.neq = c(rep(0,1500),rep(0.5,10),rep(0,490))
 
 
 #run simulations
-res.fig4.eq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.eq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
+#res.fig4.eq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.eq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
 
-res.fig4.neq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.neq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
+res.fig4.eq.vector = foreach(i=1:nsim,.combine=c,.export="transmission") %dopar% {
+  transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.eq,raw=TRUE)$obs.div[401:900]
+}
+res.fig4.eq = matrix(res.fig4.eq.vector,nrow=500,ncol=nsim)
+
+
+
+
+#res.fig4.neq=matrix(replicate(transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.neq,raw=TRUE)$obs.div[401:900],n=nsim),nrow=500,ncol=nsim)
+
+res.fig4.neq.vector = foreach(i=1:nsim,.combine=c,.export="transmission") %dopar% {
+  transmission(timesteps=2000,mu=0.005,N=500,warmUp=1000,bias=bias.neq,raw=TRUE)$obs.div[401:900]
+}
+res.fig4.neq = matrix(res.fig4.eq.vector,nrow=500,ncol=nsim)
+
+
 
 # Compute Expected Diversity
 expected.diversity = 1 - (1/(2*500*0.005+1))
+```
+
+
+```{r, close_clusters_fig4, include=FALSE}
+#stop cluster
+stopCluster(cl)
 ```
 
 
