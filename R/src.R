@@ -23,7 +23,7 @@
 #' 
 #' @import stats
 #' @import utils
-
+#' @export
 
 transmission<-function(N=500,timesteps=501,mu=0.01,warmUp=300,top=NA,bias=0,raw=FALSE)
 {
@@ -96,6 +96,7 @@ transmission<-function(N=500,timesteps=501,mu=0.01,warmUp=300,top=NA,bias=0,raw=
 
 #' @import utils
 #' @keywords internal
+#' @export
 
 #Utility Function for counting cases
 instances <- function(x,cases)
@@ -107,6 +108,7 @@ instances <- function(x,cases)
 
 #' @import utils
 #' @keywords internal
+#' @export
 
 #Compute turnover rate from frequency matrix
 turnover <- function(mat,top)
@@ -126,6 +128,7 @@ turnover <- function(mat,top)
 
 #' @import utils
 #' @keywords internal
+#' @export
 
 reScale = function(x,lo,hi)
 {
@@ -151,6 +154,7 @@ return(((hi-lo)/(max(x)-min(x)))*(x-max(x))+hi)
 #' 
 #' @import stats
 #' @import utils
+#' @export
 
 heteroPopTransmission<-function(N=500,timesteps=301,mu=0.01,bmean=0,bsd=0)
 {
