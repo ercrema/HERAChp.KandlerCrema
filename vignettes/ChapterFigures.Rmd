@@ -29,12 +29,12 @@ devtools::install_github("ercrema/HERAChp.KandlerCrema")
 
 In order to fully reproduce the figures in the text the following R packages must also be loaded:
 
-```{r,load_packages}
+```{r,load_packages,message=FALSE,results='hide'}
 library(HERAChp.KandlerCrema)
 library(plotrix)
 library(LaplacesDemon)
-library(ggplot2)
 library(ggridges)
+library(ggplot2)
 library(foreach)
 library(doParallel)
 ```
