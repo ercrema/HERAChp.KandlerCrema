@@ -31,7 +31,7 @@ Notice that this option might take a considerable amount of time (see above) and
 
 2. Manually download and render the markdown file.
 
-Download the markdown file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignettes/ChapterFigures.Rmd),and saving the page ensuring that the file extension is kept to `.Rmd`. Move the file to your current working directory, and type the following command in R:
+Download the markdown file by clicking [here](https://github.com/ercrema/HERAChp.KandlerCrema/blob/master/vignettes/ChapterFigures.Rmd),and saving the page ensuring that the file extension is kept to `.Rmd`. Move the file to your current working directory, and type the following command in R:
 
 `rmarkdown::render("ChapterFigures.Rmd")`
 
