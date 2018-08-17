@@ -37,7 +37,7 @@ Download the markdown file by clicking [here](https://github.com/ercrema/HERAChp
 
 This option allows you to change the settings of the R markdown file (e.g. changing the number of simulation runs).
 
-3. Download the rendered vignette file by clicking [here](https://raw.githubusercontent.com/ercrema/HERAChp.KandlerCrema/master/vignettes/ChapterFigures.html) and saving the opened page as an html file on your local machine. The file can then be opened by any browser. This option does not require package installation.
+3. Download the rendered vignette file by clicking [here](https://github.com/ercrema/HERAChp.KandlerCrema/blob/master/vignettes/ChapterFigures.html) and saving the opened page as an html file on your local machine. The file can then be opened by any browser. This option does not require package installation.
 
 
 
