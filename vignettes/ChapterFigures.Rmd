@@ -21,13 +21,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction and Setup
 
-This markdown document contains the R script for reproducing some of the figures of the book chapter "Analysing cultural frequency data: neutral theory and beyond" by A.Kandler and E.Crema. The main functions for running the simulations described in the chapter can be installed as an R package with following command:
+This markdown document contains the R script for reproducing some of the figures of the book chapter "Analysing cultural frequency data: neutral theory and beyond" by A.Kandler and E.Crema. The main functions for running the simulations described in the chapter can be installed as an R package with the following command:
 
 ```{r,installpackage,eval=FALSE}
 devtools::install_github("ercrema/HERAChp.KandlerCrema")
 ```
 
-In order to fully reproduce the figures in the text the following R packages must also be loaded:
+To fully reproduce the figures in the text the following R packages must also be loaded:
 
 ```{r,load_packages,message=FALSE,results='hide'}
 library(HERAChp.KandlerCrema)
@@ -39,18 +39,18 @@ library(foreach)
 library(doParallel)
 ```
 
-Some of the figures require a considerable number of simulation runs. In order to reduce running time the example belows are based on 100 repetitions instead of the 1,000 used in the book chapter, and most simulations are executed using multiple threads. 
+Some of the figures are based on a considerable number of simulation runs. In order to reduce running time the example below are based on 100 repetitions instead of the 1,000 used in the book chapter, and most simulations are executed using multiple threads. 
 
 ```{r set_nsim}
 nsim = 100 #number of repetitions
 ncores = detectCores()-1 #use total number of available threads minus 1
 ```
 
-Notice that even with the default settings above executing all the scripts below took about 40 minutes using a machine with with 8 logical CPUs (3.3 GHz Intel Core i7) and 16 GB Ram machine.  
+Notice that even with the default settings above executing all the scripts below took about 40 minutes using a machine with 8 logical CPUs (3.3 GHz Intel Core i7) and 16 GB Ram.  
 
 # Figure 1: Diversity and Battleship Curves
 
-The function `transmission()` executes unbiased and frequency biased transmission returning a variety of statistics. The example below compares the time-series of the Simpson's diversity index against the the so-called battle-ship curve of the most common variants. First we run the model and extract relevant outputs:
+The function `transmission()` generates temporal frequencies of different cultural variants under unbiased and frequency-dependent transmission returning a variety of statistics. The example below compares the time series of the Simpson's diversity index against the so-called battle-ship curve of the most common variants. First we run the model and extract relevant outputs:
 
 
 ```{r,fig1.sim,fig.height=5,fig.width=8}
@@ -70,7 +70,7 @@ divTS = res.fig1$obs.div
 divExp = res.fig1$exp.div
 ```
 
-The matrix `pmat.fig1` now contains the frequencies of each variant at each timestep, the vector `divTS` contains the time-series of Simpson's diversity index, while `divExp` contains the expected diversity under neutrality, equivalent to $1-\frac{1}{2N\mu+1}$. We are now ready to make our figure:
+The matrix `pmat.fig1` now contains the frequencies of each variant at each timestep, the vector `divTS` contains the corresponding time series of Simpson's diversity index, while `divExp` contains the expected level of diversity under neutrality given by $1-\frac{1}{2N\mu+1}$. We are now ready to produce Figure 1:
 
 
 ```{r,fig1.plot,fig.height=5,fig.width=8}
@@ -95,7 +95,7 @@ mtext(side=3,"Diversity ",line=1)
 
 # Figure 2: Effect of sampling window for computing reliable estimates of the turn-over rate
 
-Here we explore how the turn-over rate based estimate ofthe exponent $x$ is affected by the size (duration) of the sampling window. We compare the expected value f $x$ under neutrality (0.86) against distributions of simulation outputs with different number of timesteps (i.e. differently sized of sampling window). We first execute the simulation (notice that with `nsim=1000` the process will take XXX hours) 
+Here we explore how estimates of the exponent $x$ in Eq. (11) are affected by the size (duration) of the sampling window. It has been shown that under neutrality $x$ assumes a value of 0.86 and we compare this theoretical prediction against distributions of simulation outputs with different number of timesteps (i.e. differently sized of sampling window). We first execute simulations of the Wright-Fisher model (notice that with `nsim=1000` the process will take XXX hours): 
 
 
 ```{r,fig2.simulation}
@@ -127,20 +127,19 @@ lo.fig2=apply(res.fig2,2,quantile,0.25)
 up.fig2=apply(res.fig2,2,quantile,0.75)
 ```
 
-We can now visualise our output. The object `res.fig2` contains the estimates of $x$ under different sampling window size, so a quick way to plot the simulation output is to just make a box and whisker plot:
+Now we can visualise the output. The object `res.fig2` contains the estimates of $x$ under different sampling window size, so a quick way to plot the simulation output is to generate a box and whisker plot:
 
 ```{r,fig2.plot1,fig.width=9,fig.height=6}
 boxplot(res.fig2,names=timesteps-1000,xlab="time-steps",ylab="Estimates of x",col="bisque3")
 abline(h=0.86,col=2,lty=2) #expected value of x
 ```
 
-
-The code below is instead the one used in the manuscript:
+In the manuscript we used the code below:
 
 ```{r,fig2.plot2,fig.width=9,fig.height=6}
 #Plot results using rect() and unqeual spacing along the x-axis
 par(mar=c(5,4,4,1))
-plot(1:14,1:14,ylim=c(min(lo.fig2),max(up.fig2)),type="n",axes=F,xlab="N. of Timesteps",ylab="estimates of x")
+plot(1:14,1:14,ylim=c(min(lo.fig2),max(up.fig2)),type="n",axes=F,xlab="Number of time steps",ylab="Estimates of x")
 
 for (x in 1:10)
 {
@@ -165,9 +164,9 @@ abline(h=0.86,lty=2,col="red")
 
 ```
 
-# Figure 3: Effect of a Heterogenous population of learners
+# Figure 3: Effect of heterogeneity in the strength of the transmission bias in the population
 
-To execute a simulation with an heterogenous population of learners we use the function `heteroPopTransmission()` which enables to define the frequency bias of each individual at each generation as a random draw from a normal distribution with a user defined mean (argument `bmean`) and standard deviation (argument `bsd`). Here we explore a scenario where the mean is hold constant to 0 (hence on average the learners engage into an unbiased transmission), but the standard deviation is varied and explored. 
+To simulate an heterogenous population of learners we use the function `heteroPopTransmission()` which enables us to define the strength of the frequency-dependent transmission bias for each individual in each generation separately as a random draw from a normal distribution with a user-defined mean (argument `bmean`) and standard deviation (argument `bsd`). We then compare the distributions of Simpson diversity levels for populations with means of 0 (i.e. on average the learners engage in unbiased transmission), but different standard deviations. 
 
 
 ```{r,fig3.simulation}
@@ -193,8 +192,7 @@ stopCluster(cl)
 res.fig3 = matrix(res.fig3.vector,nrow=nsim,ncol=length(bsd))
 ```
 
-
-Each column of the matrix `res.fig3` now contains the result of 1,000 simulation runs with different levels of hetogeneity in the population of learners as defined by the parameter `bsd`.
+Each column of the matrix `res.fig3` now contains the diversity levels of 1,000 simulation runs with a level of heterogeneity in the population of learners as defined by the parameter `bsd`.
 
 ```{r,fig3.plot,fig.height=4,fig.width=12}
 # Setup layout
@@ -241,10 +239,9 @@ abline(v=1-(1/(500* 0.01*2+1)),lty=2,col=2,lwd=1.5)
 abline(v=mean(res.fig3[,3]),lty=3,lwd=1.5)
 ```
 
+# Figure 4: Effect of temporally changing transmission modes
 
-# Figure 4: Effect of non-equilibrium
-
-The argument `bias` in the function `transmission()` allows for a time-varying frequency bias. The code below explores how a temporary shift from an unbiased transmission to an anti-conformist transmission affects the observed diversity of the cultural variants. 
+Here we explore how a temporary shift from in the underlying transmission bias, in our case from an unbiased transmission to an anti-conformist transmission, affects the observed level of cultural diversity. The argument `bias` in the function `transmission()` allows for a time-varying frequency-dependent transmission bias by defining the strength of the bias in each time step. 
 
 ```{r, open_clusters_fig4, include=FALSE}
 
@@ -307,10 +304,9 @@ axis(2,at=seq(0,1,0.2),las=2,hadj=0.8)
 axis(1,at=c(1,100,200,300,400,500))
 ```
 
+# Figure 7: Posterior distribution of the strength of frequency-dependent transmission for the Merzbach assemblage
 
-# Figure 7: Posterior Distribution of the Merzbach Assemblage Analysis.
-
-The code below plots the results of the 
+The code below plots the results of the ABC analysis for the Merzbach assemblage. The step-by-step description of this analysis is the subject of a forthcoming R package.  
 
 ```{r,fig7.load}
 # load data
