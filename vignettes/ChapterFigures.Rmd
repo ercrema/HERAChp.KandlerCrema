@@ -242,10 +242,6 @@ abline(v=mean(res.fig3[,3]),lty=3,lwd=1.5)
 
 Here we explore how a temporary shift from in the underlying transmission bias, in our case from an unbiased transmission to an anti-conformist transmission, affects the observed level of cultural diversity. The argument `bias` in the function `transmission()` allows for a time-varying frequency-dependent transmission bias by defining the strength of the bias in each time step. 
 
-```{r, open_clusters_fig4, include=FALSE}
-
-```
-
 
 ```{r}
 #define bias parameter
