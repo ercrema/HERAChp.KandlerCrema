@@ -83,14 +83,13 @@ topVariants = 10 #show only the 10 most frequent variants
 battleship.plot(pmat.fig1[,1:topVariants],yaxlab="",xaxlab= letters[1:topVariants],border=NA,col="grey",mar=c(5,5,5,1))
 axis(2,padj=0.5)
 mtext(side=2,"time",line=2)
-mtext(side=3,paste0("Top ",topVariants," variants"),line=1)
+mtext(side=1,paste0("Top ",topVariants," variants"),line=2)
 #right panel
 par(mar=c(5,0,5,0))
 plot(divTS,1:1000,type="l",xlab="",axes=F,ylab="",xlim=c(0,1))
 abline(v=divExp,lty=2)
 axis(side=1,padj=-0.5)
-mtext(side=1,expression(1-f[t]),line=2)
-mtext(side=3,"Diversity ",line=1)
+mtext(side=1,"Diversity",line=2)
 ```
 
 # Figure 2: Effect of sampling window for computing reliable estimates of the turn-over rate
@@ -130,7 +129,7 @@ up.fig2=apply(res.fig2,2,quantile,0.75)
 Now we can visualise the output. The object `res.fig2` contains the estimates of $x$ under different sampling window size, so a quick way to plot the simulation output is to generate a box and whisker plot:
 
 ```{r,fig2.plot1,fig.width=9,fig.height=6}
-boxplot(res.fig2,names=timesteps-1000,xlab="time-steps",ylab="Estimates of x",col="bisque3")
+boxplot(res.fig2,names=timesteps-1000,xlab="Number of timesteps",ylab="Estimates of x",col="bisque3")
 abline(h=0.86,col=2,lty=2) #expected value of x
 ```
 
@@ -139,7 +138,7 @@ In the manuscript we used the code below:
 ```{r,fig2.plot2,fig.width=9,fig.height=6}
 #Plot results using rect() and unqeual spacing along the x-axis
 par(mar=c(5,4,4,1))
-plot(1:14,1:14,ylim=c(min(lo.fig2),max(up.fig2)),type="n",axes=F,xlab="Number of time steps",ylab="Estimates of x")
+plot(1:14,1:14,ylim=c(min(lo.fig2),max(up.fig2)),type="n",axes=F,xlab="Number of timesteps",ylab="Estimates of x")
 
 for (x in 1:10)
 {
@@ -283,7 +282,7 @@ expected.diversity = 1 - (1/(2*500*0.005+1))
 ```{r,fig4.plot1,fig.width=8,fig.height=6}
 par(mfrow=c(2,1),mar=c(1,5,5,2))
 
-plot(1:500,res.fig4.eq[,1],ylim=c(0.4,1),type="n",xlab="",ylab="Simpson's Diversity",xaxs="i",axes=F,las=2)
+plot(1:500,res.fig4.eq[,1],ylim=c(0.4,1),type="n",xlab="",ylab="Diversity",xaxs="i",axes=F,las=2)
 text(480,0.5,"a",cex=1.5)
 polygon(x=c(1:500,500:1),y=c(apply(res.fig4.eq,1,quantile,prob=0.025),rev(apply(res.fig4.eq,1,quantile,prob=0.975))),col=rgb(1,0,0,0.2),border=NA)
 apply(res.fig4.eq,2,lines,col=rgb(0,0,0,0.01),x=1:500)
@@ -293,7 +292,7 @@ axis(2,at=seq(0,1,0.2),las=2,hadj=0.8)
 
 par(mar=c(6,5,0,2))
 
-plot(1:500,res.fig4.neq[,1],ylim=c(0.4,1),type="n",xlab="time",ylab="Simpson's Diversity",xaxs="i",axes=F,las=2)
+plot(1:500,res.fig4.neq[,1],ylim=c(0.4,1),type="n",xlab="time",ylab="Diversity",xaxs="i",axes=F,las=2)
 polygon(x=c(1:500,500:1),y=c(apply(res.fig4.neq,1,quantile,prob=0.025),rev(apply(res.fig4.neq,1,quantile,prob=0.975))),col=rgb(1,0,0,0.2),border=NA)
 apply(res.fig4.neq,2,lines,col=rgb(0,0,0,0.01),x=1:500)
 lines(1:500,apply(res.fig4.neq,1,mean),col="red")
