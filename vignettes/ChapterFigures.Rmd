@@ -81,8 +81,8 @@ par(mfrow=c(1,2))
 par(mar=c(5,0,5,0))
 topVariants = 10 #show only the 10 most frequent variants
 battleship.plot(pmat.fig1[,1:topVariants],yaxlab="",xaxlab= letters[1:topVariants],border=NA,col="grey",mar=c(5,5,5,1))
-axis(2,padj=0.5)
-mtext(side=2,"time",line=2)
+axis(2,padj=0.5,line=-4)
+mtext(side=2,"time",line=-2)
 mtext(side=1,paste0("Top ",topVariants," variants"),line=2)
 #right panel
 par(mar=c(5,0,5,0))
