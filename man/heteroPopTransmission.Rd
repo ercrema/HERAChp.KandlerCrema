@@ -4,8 +4,8 @@
 \alias{heteroPopTransmission}
 \title{Simulating Frequency-Biased Cultural Transmission with an Heterogenous Population.}
 \usage{
-heteroPopTransmission(N = 500, timesteps = 301, mu = 0.01, bmean = 0,
-  bsd = 0)
+heteroPopTransmission(N = 500, timesteps = 301, mu = 0.01,
+  bmean = 0, bsd = 0)
 }
 \arguments{
 \item{N}{Number of individuals.}
@@ -22,7 +22,7 @@ heteroPopTransmission(N = 500, timesteps = 301, mu = 0.01, bmean = 0,
 A vector containing the Simpson's diversity index at each timestep/generation.
 }
 \description{
-Simulates biased and frequency-biased transmission with the frequency bias parameter of each individual randomly drawn from a normal distribution with user defined mean and standard deviation.
+Simulates unbiased/frequency-biased transmission with the bias parameter of each individual randomly drawn from a normal distribution with user-defined mean and standard deviation.
 }
 \details{
 The function simulates cultural transmission within a population of heterogenous learners, each with a different levels of frequency bias at each generation. More formally the probability of an individual $x$ copying a variant $i$ is given by the following equation.

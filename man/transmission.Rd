@@ -14,22 +14,22 @@ transmission(N = 500, timesteps = 501, mu = 0.01, warmUp = 300,
 
 \item{mu}{Innovation rate.}
 
-\item{top}{Number indicating the most common variants considered for the turn-over rate analysis (e.g. if top is equal to 5 the turnover rate is computed as the average number of new variants introduced in the top 1, 2, 3, ,4 and 5 ranked variants).}
+\item{top}{Number indicating the most common variants considered for the turn-over rate analysis (e.g. if \code{top} is equal to 5 the turnover rate is computed as the average number of new variants introduced in the top 1, 2, 3, ,4 and 5 ranked variants at each timestep).}
 
-\item{bias}{Frequency bias parameter. Either a vector with length equal to the number of timesteps (to allow for a time-varying frequency bias), or single value (for a fixed frequency bias).}
+\item{bias}{Frequency bias parameter. Either a vector with length equal to the number of timesteps (to allow for a time-varying frequency bias), or single value (for a fixed bias).}
 
 \item{raw}{Logical variable indicating whether the matrix of variants frequencies are returned or not. Default is FALSE.}
 
 \item{wamUp}{Number of generations executed to reach equilibrium conditions (discarded from analysis)}
 }
 \value{
-A list containing: 1) a matrix of variants frequencies, with rows equal to  generations and columns to specific variants (\code{rawMatrix}, available on when the argument \code{raw} is set to \code{TRUE}.; 2) a data.frame with the observed turnover rates (column: \code{obs.z}), the expected rates according to  Bentley et al 2007 (column: \code{exp.z.Bentley}) and Evans and Giometto 2012 (column: \code{exp.z.EvansGiometto}); 3) the fitted value for the parameter \code{b}; 4) a vector with a time-series of observed Simpson's diversity index (\code{obs.div}); and 5) the expected Simpson's diversity under neutrality, equal to \eqn{ 1 - (1/(2*N*\mu + 1))} (\code{exp.div}).
+A list containing: 1) a matrix of variants frequencies, with rows equal to  generations and columns to specific variants (\code{rawMatrix}, available on when the argument \code{raw} is set to \code{TRUE}.; 2) a data.frame with the observed turnover rates (column: \code{obs.z}), the expected rates according to  Bentley et al 2007 (column: \code{exp.z.Bentley}) and Evans and Giometto 2012 (column: \code{exp.z.EvansGiometto}); 3) the fitted value for the parameter \code{x}; 4) a vector with a time-series of observed Simpson's diversity index (\code{obs.div}); and 5) the expected Simpson's diversity under neutrality, equal to \eqn{ 1 - (1/(2*N*\mu + 1))} (\code{exp.div}).
 }
 \description{
-Function for simulating unbiased and frequency-biased cultural transmission with and retrieving turn-over rates and diversity.
+Function for simulating unbiased/frequency-biased cultural transmission.
 }
 \details{
-The function simulates unbiased (\code{bias}=0), confomist (\code{bias}<0), and anti-conformist (\code{bias}>0) cultural transmission with a user defined population size and mutation rates, returning Simpson's diversity index of variants frequency, observed and expected turnover rates, and estimates of the exponent $b$ following the procedure described in Acerbi and Bentley 2014. Frequency bias is modelled using the following formula:
+The function simulates unbiased (\code{bias}=0), confomist (\code{bias}<0), and anti-conformist (\code{bias}>0) cultural transmission with a user-defined population size and mutation rates, returning Simpson's diversity index of variants frequency, observed and expected turnover rates, and estimates of the exponent \eqn{x} following the procedure described in Acerbi and Bentley 2014 (notice that Acerbi and Bentley refer to this exponent as \eqn{b}). Frequency bias is modelled using the following formula:
 \deqn{\pi_i=\frac{\left(\frac{m_i}{N}\right)^{1-\beta}}{\sum\limits_{j=1}^k \left(\frac{m_j}{N}\right)^{1-\beta}}(1-\mu)}
 with \eqn{pi_i} equal to the probability of copying the variant \eqn{i}, \eqn{m_i} to the number of individuals possessing the variant \eqn{i}, \eqn{N} to the population size, \eqn{mu} to the mutation rate, and \eqn{\beta} to the frequency bias parameter (i.e. \code{bias}).
 }
