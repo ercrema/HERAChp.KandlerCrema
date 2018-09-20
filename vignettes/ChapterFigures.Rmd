@@ -111,7 +111,7 @@ registerDoParallel(cl)
 
 # execute simulation in parallel and extract estimates of the exponent x (here named b):
 res.fig2.vector = foreach(i=1:length(timesteps.param),.combine=c,.export="transmission") %dopar% {
-  tmp=transmission(timesteps=timesteps.param[i],mu=0.01,N=500,warmUp=1000,bias=0,raw=F,top=10)$b
+  tmp=transmission(timesteps=timesteps.param[i],mu=0.01,N=500,warmUp=1000,bias=0,raw=F,top=10)$x
 }
 
 #stop cluster
@@ -165,7 +165,7 @@ abline(h=0.86,lty=2,col="red")
 
 # Figure 3: Effect of heterogeneity in the strength of the transmission bias in the population
 
-To simulate an heterogenous population of learners we use the function `heteroPopTransmission()` which enables us to define the strength of the frequency-dependent transmission bias for each individual in each generation separately as a random draw from a normal distribution with a user-defined mean (argument `bmean`) and standard deviation (argument `bsd`). We then compare the distributions of Simpson diversity levels for populations with means of 0 (i.e. on average the learners engage in unbiased transmission), but different standard deviations. 
+To simulate an heterogeneous population of learners we use the function `heteroPopTransmission()` which enables us to define the strength of the frequency-dependent transmission bias for each individual in each generation separately as a random draw from a normal distribution with a user-defined mean (argument `bmean`) and standard deviation (argument `bsd`). We then compare the distributions of Simpson diversity levels for populations with means of 0 (i.e. on average the learners engage in unbiased transmission), but different standard deviations. 
 
 
 ```{r,fig3.simulation}
